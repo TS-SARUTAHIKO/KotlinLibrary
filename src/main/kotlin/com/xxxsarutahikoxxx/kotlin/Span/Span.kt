@@ -112,6 +112,11 @@ class ListSpan(open : Char?, close : Char?) : Span {
                 this.parse(text, 0, decorations)
             }
         }
+
+        /** [parse] を実行して [ListSpan] を作成した後に [decorations] で区切られていない [TextSpan] だけを連結して返す */
+        fun noDecorations(text : String, decorations : Map<Char, Char> = Decorations) : String {
+            return parse(text).textSpans.joinToString("")
+        }
     }
 }
 /** テキストのみを持つ[Span] */
@@ -121,7 +126,8 @@ class TextSpan(var text : String) : Span {
 
 
 fun main(args: Array<String>) {
-    var listSpan = ListSpan.parse("xxx_[ pre <main> post ]_yyy_(marker)[a[b]c]")
+    val text = "xxx_[ pre <main> post ]_yyy_(marker)[a[b]c]"
+    var listSpan = ListSpan.parse(text)
 
     out = listSpan.spans[0] // TextSpan text="xxx_"
     out = listSpan.spans[1] // ListSpan open='[', close=']'
@@ -146,4 +152,7 @@ fun main(args: Array<String>) {
     // デフォルトで使用される装飾のペアに '/' to '/' を追加する
     // 以降の parse() では '/' to '/' が使用されるようになる
     ListSpan.Decorations['/'] = '/'
+
+    // 装飾を取り除いたテキスト部分
+    out = ListSpan.noDecorations(text) // xxx__yyy_
 }
