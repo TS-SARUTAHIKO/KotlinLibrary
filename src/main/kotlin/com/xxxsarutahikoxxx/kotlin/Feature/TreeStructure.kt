@@ -1,0 +1,125 @@
+package com.xxxsarutahikoxxx.kotlin.Feature
+
+import com.xxxsarutahikoxxx.kotlin.Utilitys.MutableTriple
+import com.xxxsarutahikoxxx.kotlin.Utilitys.out
+
+
+/**
+ * [TreeNode] のノード属性情報を隠蔽するための typealias
+ * */
+typealias TreeNodeParams = MutableTriple<Boolean, TreeNode?, MutableList<TreeNode>>
+
+/**
+ * ツリーを構築するための基本ノード
+ * */
+interface TreeNode {
+    val treeNodeParams : TreeNodeParams
+    val defaultTreeNodeParams : TreeNodeParams get() = MutableTriple(false, null, mutableListOf<TreeNode>())
+
+    fun expand(){
+        if( ! isExpanded ){
+            treeNodeParams.first = true
+            (root as? TreeRoot)?.onExpanded?.invoke (this)
+        }
+    }
+    fun collapse(){
+        if( isExpanded ){
+            treeNodeParams.first = false
+            (root as? TreeRoot)?.onCollapsed?.invoke (this)
+        }
+    }
+    val isExpanded get() = treeNodeParams.first
+
+    val parent : TreeNode? get() = treeNodeParams.second
+    val parents : List<TreeNode> get(){
+        return parent?.run { val ret = mutableListOf<TreeNode>() ; ret.addAll(parents) ; ret.add(this) ; ret } ?: listOf()
+    }
+    val root : TreeNode get() = parents.firstOrNull() ?: this
+    val layer : Int get() = parents.size
+
+    val children : List<TreeNode> get() = treeNodeParams.third
+    fun add(node : TreeNode, index : Int = children.size) : TreeNode {
+        treeNodeParams.third.add(index, node)
+        node.treeNodeParams.second = this
+
+        (root as? TreeRoot)?.onAdded?.invoke (node)
+
+        return this
+    }
+    fun remove(node : TreeNode){
+        (root as? TreeRoot)?.onRemoved?.invoke (node)
+
+        treeNodeParams.third.remove(node)
+        node.treeNodeParams.second = null
+    }
+    val allChildren : List<TreeNode>
+        get() = children.map { val ret = mutableListOf<TreeNode>() ; ret.add(it) ; ret.addAll(it.allChildren) ; ret }.flatten()
+    val expandedChildren : List<TreeNode>
+        get() = children.map { val ret = mutableListOf<TreeNode>() ; ret.add(it) ; ret.addAll(if( it.isExpanded ){ it.expandedChildren }else{ listOf() }) ; ret }.flatten()
+
+    val isLeaf : Boolean get() = children.isEmpty()
+    val isBranch : Boolean get() = children.isNotEmpty()
+}
+/**
+ * ツリーの Root となるノード
+ * */
+interface TreeRoot : TreeNode {
+    var onExpanded : (node : TreeNode) -> (Unit)
+    var onCollapsed : (node : TreeNode) -> (Unit)
+    var onAdded : (node : TreeNode) -> (Unit)
+    var onRemoved : (node : TreeNode) -> (Unit)
+}
+
+/**
+ * [TreeNode] のデフォルト実装を返す
+ * */
+fun TreeRoot( init : TreeRoot.()->(Unit) ) : TreeRoot {
+    return object : TreeRoot {
+        override val treeNodeParams: TreeNodeParams = defaultTreeNodeParams
+
+        override var onExpanded: (node: TreeNode) -> Unit = {}
+        override var onCollapsed: (node: TreeNode) -> Unit = {}
+        override var onAdded: (node: TreeNode) -> Unit = {}
+        override var onRemoved: (node: TreeNode) -> Unit = {}
+
+        val content : Any = "Root"
+        override fun toString(): String = this.content.toString()
+    }.apply(init)
+}
+/**
+ * [TreeRoot] のデフォルト実装を返す
+ * */
+fun TreeNode(content : Any) : TreeNode {
+    return object : TreeNode {
+        override val treeNodeParams: TreeNodeParams = defaultTreeNodeParams
+
+        val content : Any = content
+        override fun toString(): String = this.content.toString()
+    }
+}
+/** 子ノード追加のシンタックス・シュガー */
+fun TreeNode.create(content : Any, init : TreeNode.()->(Unit) = {}){
+    val child = TreeNode(content)
+    add(child)
+    child.init()
+}
+
+
+fun main(args: Array<String>) {
+
+    val root = TreeRoot {
+        onExpanded = { out = "$it" } // ノードが展開された場合にノードを出力する関数を設定する
+
+        create("c1")
+        create("c2"){
+            create("c2-1")
+        }
+        create("c3")
+    }
+
+
+    out = root.allChildren // [c1, c2, c2-1, c3]
+    out = root.expandedChildren // [c1, c2, c3]
+
+    root.allChildren[2].expand() // c2-1
+}
