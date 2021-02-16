@@ -35,7 +35,7 @@ class ListSpan(open : Char?, close : Char?) : Span {
     val allSpans : List<Span> get(){
         return spans.map {
             when(it){
-                is ListSpan -> listOf(it, *it.allSpans.toTypedArray())
+                is ListSpan -> listOf(it) + it.allSpans
                 is TextSpan -> listOf(it)
                 else -> listOf()
             }

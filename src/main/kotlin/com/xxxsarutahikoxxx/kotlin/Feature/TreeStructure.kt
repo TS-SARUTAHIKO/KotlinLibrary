@@ -20,6 +20,7 @@ interface TreeNode {
 
     var content : Any?
 
+    val isExpanded get() = treeNodeParams.first
     fun expand(){
         if( ! isExpanded ){
             treeNodeParams.first = true
@@ -33,7 +34,9 @@ interface TreeNode {
         }
     }
     fun toggle() = if( isExpanded ) collapse() else expand()
-    val isExpanded get() = treeNodeParams.first
+    fun expandAll(){
+        (listOf(this) + allChildren).filter { ! it.isExpanded }.forEach { it.expand() }
+    }
 
     val parent : TreeNode? get() = treeNodeParams.second
     val parents : List<TreeNode> get(){
@@ -58,9 +61,9 @@ interface TreeNode {
         node.treeNodeParams.second = null
     }
     val allChildren : List<TreeNode>
-        get() = children.map { val ret = mutableListOf<TreeNode>() ; ret.add(it) ; ret.addAll(it.allChildren) ; ret }.flatten()
+        get() = children.map { listOf(it) + it.allChildren }.flatten()
     val expandedChildren : List<TreeNode>
-        get() = children.map { val ret = mutableListOf<TreeNode>() ; ret.add(it) ; ret.addAll(if( it.isExpanded ){ it.expandedChildren }else{ listOf() }) ; ret }.flatten()
+        get() = children.map { listOf(it) + if( it.isExpanded ){ it.expandedChildren }else{ listOf() } }.flatten()
 
     val isLeaf : Boolean get() = children.isEmpty()
     val isBranch : Boolean get() = children.isNotEmpty()
