@@ -6,6 +6,8 @@ import com.xxxsarutahikoxxx.kotlin.Utilitys.out
 
 /**
  * [TreeNode] のノード属性情報を隠蔽するための typealias
+ *
+ * 実際は isExpanded : Boolean, parent : TreeNode?, children : MutableList<TreeNode> のセット情報
  * */
 typealias TreeNodeParams = MutableTriple<Boolean, TreeNode?, MutableList<TreeNode>>
 
@@ -16,18 +18,21 @@ interface TreeNode {
     val treeNodeParams : TreeNodeParams
     val defaultTreeNodeParams : TreeNodeParams get() = MutableTriple(false, null, mutableListOf<TreeNode>())
 
+    var content : Any?
+
     fun expand(){
         if( ! isExpanded ){
             treeNodeParams.first = true
-            (root as? TreeRoot)?.onExpanded?.invoke (this)
+            (root as? TreeRoot)?.let { it.onExpanded(it, this) }
         }
     }
     fun collapse(){
         if( isExpanded ){
             treeNodeParams.first = false
-            (root as? TreeRoot)?.onCollapsed?.invoke (this)
+            (root as? TreeRoot)?.let { it.onCollapsed(it, this) }
         }
     }
+    fun toggle() = if( isExpanded ) collapse() else expand()
     val isExpanded get() = treeNodeParams.first
 
     val parent : TreeNode? get() = treeNodeParams.second
@@ -42,12 +47,12 @@ interface TreeNode {
         treeNodeParams.third.add(index, node)
         node.treeNodeParams.second = this
 
-        (root as? TreeRoot)?.onAdded?.invoke (node)
+        (root as? TreeRoot)?.let { it.onAdded(it, this) }
 
         return this
     }
     fun remove(node : TreeNode){
-        (root as? TreeRoot)?.onRemoved?.invoke (node)
+        (root as? TreeRoot)?.let { it.onRemoved(it, this) }
 
         treeNodeParams.third.remove(node)
         node.treeNodeParams.second = null
@@ -64,27 +69,31 @@ interface TreeNode {
  * ツリーの Root となるノード
  * */
 interface TreeRoot : TreeNode {
-    var onExpanded : (node : TreeNode) -> (Unit)
-    var onCollapsed : (node : TreeNode) -> (Unit)
-    var onAdded : (node : TreeNode) -> (Unit)
-    var onRemoved : (node : TreeNode) -> (Unit)
+    /** ノードが開いた場合に呼ばれる */
+    var onExpanded : TreeRoot.(node : TreeNode) -> (Unit)
+    /** ノードが閉じた場合に呼ばれる */
+    var onCollapsed : TreeRoot.(node : TreeNode) -> (Unit)
+    /** ノードが追加された場合に呼ばれる（除去の処理が実行された後に呼ばれる） */
+    var onAdded : TreeRoot.(node : TreeNode) -> (Unit)
+    /** ノードが除去された場合に呼ばれる（除去の処理が実行される前に呼ばれる） */
+    var onRemoved : TreeRoot.(node : TreeNode) -> (Unit)
 }
 
 /**
  * [TreeNode] のデフォルト実装を返す
  * */
 fun TreeRoot( init : TreeRoot.()->(Unit) ) : TreeRoot {
-    return object : TreeRoot {
+    return object  : TreeRoot {
         override val treeNodeParams: TreeNodeParams = defaultTreeNodeParams
+        override var content : Any? = "Root"
 
-        override var onExpanded: (node: TreeNode) -> Unit = {}
-        override var onCollapsed: (node: TreeNode) -> Unit = {}
-        override var onAdded: (node: TreeNode) -> Unit = {}
-        override var onRemoved: (node: TreeNode) -> Unit = {}
-
-        val content : Any = "Root"
-        override fun toString(): String = this.content.toString()
-    }.apply(init)
+        override var onExpanded: TreeRoot.(node: TreeNode) -> Unit = {}
+        override var onCollapsed: TreeRoot.(node: TreeNode) -> Unit = {}
+        override var onAdded: TreeRoot.(node: TreeNode) -> Unit = {}
+        override var onRemoved: TreeRoot.(node: TreeNode) -> Unit = {}
+    }.apply {
+       init()
+    }
 }
 /**
  * [TreeRoot] のデフォルト実装を返す
@@ -92,9 +101,7 @@ fun TreeRoot( init : TreeRoot.()->(Unit) ) : TreeRoot {
 fun TreeNode(content : Any) : TreeNode {
     return object : TreeNode {
         override val treeNodeParams: TreeNodeParams = defaultTreeNodeParams
-
-        val content : Any = content
-        override fun toString(): String = this.content.toString()
+        override var content : Any? = content
     }
 }
 /** 子ノード追加のシンタックス・シュガー */
