@@ -37,6 +37,9 @@ interface TreeNode {
     fun expandAll(){
         (listOf(this) + allChildren).filter { ! it.isExpanded }.forEach { it.expand() }
     }
+    fun collapseAll(){
+        (listOf(this) + allChildren).filter { it.isExpanded }.forEach { it.collapse() }
+    }
 
     val parent : TreeNode? get() = treeNodeParams.second
     val parents : List<TreeNode> get(){
@@ -50,15 +53,17 @@ interface TreeNode {
         treeNodeParams.third.add(index, node)
         node.treeNodeParams.second = this
 
-        (root as? TreeRoot)?.let { it.onAdded(it, this) }
+        (root as? TreeRoot)?.let { it.onAdded(it, node) }
 
         return this
     }
     fun remove(node : TreeNode){
-        (root as? TreeRoot)?.let { it.onRemoved(it, this) }
+        (root as? TreeRoot)?.let { it.onPreRemoved(it, node) }
 
         treeNodeParams.third.remove(node)
         node.treeNodeParams.second = null
+
+        (root as? TreeRoot)?.let { it.onRemoved(it, node) }
     }
     val allChildren : List<TreeNode>
         get() = children.map { listOf(it) + it.allChildren }.flatten()
@@ -78,7 +83,9 @@ interface TreeRoot : TreeNode {
     var onCollapsed : TreeRoot.(node : TreeNode) -> (Unit)
     /** ノードが追加された場合に呼ばれる（除去の処理が実行された後に呼ばれる） */
     var onAdded : TreeRoot.(node : TreeNode) -> (Unit)
-    /** ノードが除去された場合に呼ばれる（除去の処理が実行される前に呼ばれる） */
+    /** ノードが除去される直前に呼ばれる */
+    var onPreRemoved : TreeRoot.(node : TreeNode) -> (Unit)
+    /** ノードが除去された直後に呼ばれる */
     var onRemoved : TreeRoot.(node : TreeNode) -> (Unit)
 }
 
@@ -93,6 +100,7 @@ fun TreeRoot( init : TreeRoot.()->(Unit) ) : TreeRoot {
         override var onExpanded: TreeRoot.(node: TreeNode) -> Unit = {}
         override var onCollapsed: TreeRoot.(node: TreeNode) -> Unit = {}
         override var onAdded: TreeRoot.(node: TreeNode) -> Unit = {}
+        override var onPreRemoved: TreeRoot.(node: TreeNode) -> Unit = {}
         override var onRemoved: TreeRoot.(node: TreeNode) -> Unit = {}
     }.apply {
        init()
