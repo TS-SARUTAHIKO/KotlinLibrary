@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-  <info organisation="com.xxxsarutahikoxxx.kotlin" module="KotlinLibrary" revision="1.0-SNAPSHOT" status="integration" publication="20210217213122"/>
+  <info organisation="com.xxxsarutahikoxxx.kotlin" module="KotlinLibrary" revision="1.0-SNAPSHOT" status="integration" publication="20210217235533"/>
   <configurations>
     <conf name="annotationProcessor" visibility="private"/>
     <conf name="api" visibility="private" extends="compile"/>
@@ -51,7 +51,7 @@
   <dependencies>
     <dependency org="org.jetbrains.kotlin" name="kotlin-stdlib-jdk8" rev="1.4.21" conf="implementation-&gt;default"/>
     <dependency org="io.ultreia" name="bluecove" rev="2.1.1" conf="implementation-&gt;default"/>
-    <dependency org="org.jetbrains.kotlinx" name="kotlinx-coroutines-core" rev="1.4.2" conf="implementation-&gt;default"/>
+    <dependency org="org.jetbrains.kotlinx" name="kotlinx-coroutines-core" rev="1.3.0" conf="implementation-&gt;default"/>
     <dependency org="org.jetbrains.kotlin" name="kotlin-compiler-embeddable" rev="1.4.21" conf="kotlinCompilerClasspath-&gt;default"/>
     <dependency org="org.jetbrains.kotlin" name="kotlin-scripting-compiler-embeddable" rev="1.4.21" conf="kotlinCompilerPluginClasspath-&gt;default"/>
     <dependency org="org.jetbrains.kotlin" name="kotlin-klib-commonizer-embeddable" rev="1.4.21" conf="kotlinKlibCommonizerClasspath-&gt;default"/>
