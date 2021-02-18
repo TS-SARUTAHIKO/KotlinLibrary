@@ -5,7 +5,7 @@ import com.xxxsarutahikoxxx.kotlin.Utilitys.out
 
 
 /**
- * [TreeNode] のノード属性情報を隠蔽するための typealias
+ * [treeNode] のノード属性情報を隠蔽するための typealias
  *
  * 実際は isExpanded : Boolean, parent : TreeNode?, children : MutableList<TreeNode> のセット情報
  * */
@@ -15,21 +15,21 @@ typealias TreeNodeParams = MutableTriple<Boolean, TreeNode?, MutableList<TreeNod
  * ツリーを構築するための基本ノード
  * */
 interface TreeNode {
-    val treeNodeParams : TreeNodeParams
-    val defaultTreeNodeParams : TreeNodeParams get() = MutableTriple(false, null, mutableListOf<TreeNode>())
+    val nodeParams : TreeNodeParams
+    val defaultNodeParams : TreeNodeParams get() = MutableTriple(false, null, mutableListOf<TreeNode>())
 
     var content : Any?
 
-    val isExpanded get() = treeNodeParams.first
+    val isExpanded get() = nodeParams.first
     fun expand(){
         if( ! isExpanded ){
-            treeNodeParams.first = true
+            nodeParams.first = true
             (root as? TreeRoot)?.let { it.onExpanded(it, this) }
         }
     }
     fun collapse(){
         if( isExpanded ){
-            treeNodeParams.first = false
+            nodeParams.first = false
             (root as? TreeRoot)?.let { it.onCollapsed(it, this) }
         }
     }
@@ -41,17 +41,17 @@ interface TreeNode {
         (listOf(this) + allChildren).filter { it.isExpanded }.forEach { it.collapse() }
     }
 
-    val parent : TreeNode? get() = treeNodeParams.second
+    val parent : TreeNode? get() = nodeParams.second
     val parents : List<TreeNode> get(){
         return parent?.run { val ret = mutableListOf<TreeNode>() ; ret.addAll(parents) ; ret.add(this) ; ret } ?: listOf()
     }
     val root : TreeNode get() = parents.firstOrNull() ?: this
     val layer : Int get() = parents.size
 
-    val children : List<TreeNode> get() = treeNodeParams.third
+    val children : List<TreeNode> get() = nodeParams.third
     fun add(node : TreeNode, index : Int = children.size) : TreeNode {
-        treeNodeParams.third.add(index, node)
-        node.treeNodeParams.second = this
+        nodeParams.third.add(index, node)
+        node.nodeParams.second = this
 
         (root as? TreeRoot)?.let { it.onAdded(it, node) }
 
@@ -60,8 +60,8 @@ interface TreeNode {
     fun remove(node : TreeNode){
         (root as? TreeRoot)?.let { it.onPreRemoved(it, node) }
 
-        treeNodeParams.third.remove(node)
-        node.treeNodeParams.second = null
+        nodeParams.third.remove(node)
+        node.nodeParams.second = null
 
         (root as? TreeRoot)?.let { it.onRemoved(it, node) }
     }
@@ -90,15 +90,15 @@ interface TreeRoot : TreeNode {
 }
 
 /**
- * [TreeNode] のデフォルト実装を返す
+ * [treeNode] のデフォルト実装を返す
  *
  * [childFactory] が指定されている場合はそれによって子となる [CONTENT] を取得して再帰的に子ノードを作成する
  *
  * [init] が指定されている場合は [init] によって返されるノードの初期化処理が行われる
  * */
-fun <CONTENT : Any?> TreeRoot( content : CONTENT, childFactory : (CONTENT)->(List<CONTENT>) = { listOf() }, init : TreeRoot.()->(Unit) = {} ) : TreeRoot {
+fun <CONTENT : Any?> treeRoot(content : CONTENT, childFactory : (CONTENT)->(List<CONTENT>) = { listOf() }, init : TreeRoot.()->(Unit) = {} ) : TreeRoot {
     return object  : TreeRoot {
-        override val treeNodeParams: TreeNodeParams = defaultTreeNodeParams
+        override val nodeParams: TreeNodeParams = defaultNodeParams
         override var content : Any? = content
 
         override var onExpanded: TreeRoot.(node: TreeNode) -> Unit = {}
@@ -108,45 +108,41 @@ fun <CONTENT : Any?> TreeRoot( content : CONTENT, childFactory : (CONTENT)->(Lis
         override var onRemoved: TreeRoot.(node: TreeNode) -> Unit = {}
     }.apply {
         childFactory(content).forEach {
-            add( TreeNode(it, childFactory) )
+            add( treeNode(it, childFactory) )
         }
 
         init()
     }
 }
 /**
- * [TreeRoot] のデフォルト実装を返す
+ * [treeRoot] のデフォルト実装を返す
  *
  * [childFactory] が指定されている場合はそれによって子となる [CONTENT] を取得して再帰的に子ノードを作成する
  *
  * [init] が指定されている場合は [init] によって返されるノードの初期化処理が行われる
  * */
-fun <CONTENT : Any?> TreeNode(content : CONTENT, childFactory : (CONTENT)->(List<CONTENT>) = { listOf() }, init : TreeNode.()->(Unit) = {} ) : TreeNode {
+fun <CONTENT : Any?> treeNode(content : CONTENT, childFactory : (CONTENT)->(List<CONTENT>) = { listOf() }, init : TreeNode.()->(Unit) = {} ) : TreeNode {
     return object : TreeNode {
-        override val treeNodeParams: TreeNodeParams = defaultTreeNodeParams
+        override val nodeParams: TreeNodeParams = defaultNodeParams
         override var content : Any? = content
     }.apply {
         childFactory(content).forEach {
-            add( TreeNode(it, childFactory) )
+            add( treeNode(it, childFactory) )
         }
 
         init()
     }
 }
 /** 子ノード追加のシンタックス・シュガー */
-fun TreeNode.create(content : Any, init : TreeNode.()->(Unit) = {}){
-    val child = TreeNode(content)
-    add(child)
-    child.init()
+fun <CONTENT : Any?> TreeNode.create(content : CONTENT, childFactory : (CONTENT)->(List<CONTENT>) = { listOf() }, init : TreeNode.()->(Unit) = {}){
+    add(treeNode(content, childFactory, init))
 }
-
-
 
 
 
 fun main(args: Array<String>) {
 
-    val root = TreeRoot("Root") {
+    val root = treeRoot("Root") {
         onExpanded = { out = "${it.content}" } // ノードが展開された場合にノードを出力する関数を設定する
 
         create("c1")
