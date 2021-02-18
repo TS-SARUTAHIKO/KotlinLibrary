@@ -91,11 +91,15 @@ interface TreeRoot : TreeNode {
 
 /**
  * [TreeNode] のデフォルト実装を返す
+ *
+ * [childFactory] が指定されている場合はそれによって子となる [CONTENT] を取得して再帰的に子ノードを作成する
+ *
+ * [init] が指定されている場合は [init] によって返されるノードの初期化処理が行われる
  * */
-fun TreeRoot( init : TreeRoot.()->(Unit) ) : TreeRoot {
+fun <CONTENT : Any?> TreeRoot( content : CONTENT, childFactory : (CONTENT)->(List<CONTENT>) = { listOf() }, init : TreeRoot.()->(Unit) = {} ) : TreeRoot {
     return object  : TreeRoot {
         override val treeNodeParams: TreeNodeParams = defaultTreeNodeParams
-        override var content : Any? = "Root"
+        override var content : Any? = content
 
         override var onExpanded: TreeRoot.(node: TreeNode) -> Unit = {}
         override var onCollapsed: TreeRoot.(node: TreeNode) -> Unit = {}
@@ -103,16 +107,30 @@ fun TreeRoot( init : TreeRoot.()->(Unit) ) : TreeRoot {
         override var onPreRemoved: TreeRoot.(node: TreeNode) -> Unit = {}
         override var onRemoved: TreeRoot.(node: TreeNode) -> Unit = {}
     }.apply {
-       init()
+        childFactory(content).forEach {
+            add( TreeNode(it, childFactory) )
+        }
+
+        init()
     }
 }
 /**
  * [TreeRoot] のデフォルト実装を返す
+ *
+ * [childFactory] が指定されている場合はそれによって子となる [CONTENT] を取得して再帰的に子ノードを作成する
+ *
+ * [init] が指定されている場合は [init] によって返されるノードの初期化処理が行われる
  * */
-fun TreeNode(content : Any) : TreeNode {
+fun <CONTENT : Any?> TreeNode(content : CONTENT, childFactory : (CONTENT)->(List<CONTENT>) = { listOf() }, init : TreeNode.()->(Unit) = {} ) : TreeNode {
     return object : TreeNode {
         override val treeNodeParams: TreeNodeParams = defaultTreeNodeParams
         override var content : Any? = content
+    }.apply {
+        childFactory(content).forEach {
+            add( TreeNode(it, childFactory) )
+        }
+
+        init()
     }
 }
 /** 子ノード追加のシンタックス・シュガー */
@@ -123,10 +141,13 @@ fun TreeNode.create(content : Any, init : TreeNode.()->(Unit) = {}){
 }
 
 
+
+
+
 fun main(args: Array<String>) {
 
-    val root = TreeRoot {
-        onExpanded = { out = "$it" } // ノードが展開された場合にノードを出力する関数を設定する
+    val root = TreeRoot("Root") {
+        onExpanded = { out = "${it.content}" } // ノードが展開された場合にノードを出力する関数を設定する
 
         create("c1")
         create("c2"){
@@ -136,8 +157,8 @@ fun main(args: Array<String>) {
     }
 
 
-    out = root.allChildren // [c1, c2, c2-1, c3]
-    out = root.expandedChildren // [c1, c2, c3]
+    out = root.allChildren.map { it.content } // [c1, c2, c2-1, c3]
+    out = root.expandedChildren.map { it.content } // [c1, c2, c3]
 
     root.allChildren[2].expand() // c2-1
 }
