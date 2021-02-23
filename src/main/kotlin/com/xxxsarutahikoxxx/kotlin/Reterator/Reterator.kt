@@ -1,15 +1,8 @@
 package com.xxxsarutahikoxxx.kotlin.Reterator
 
+import com.xxxsarutahikoxxx.kotlin.Utilitys.MutableValue
 import java.io.Serializable
 
-/**
- * Int のラッパークラス
- * */
-class IntWrapper(var value : Int) : Serializable {
-    companion object {
-        private const val serialVersionUID: Long = 1L
-    }
-}
 
 /**
  * リストの操作用インスタンス（Iterator の機能拡張）
@@ -27,6 +20,7 @@ class IntWrapper(var value : Int) : Serializable {
  * - next(step : Int) : step 数、次に進める
  * - previous(step : Int) : step 数、前に戻す
  * - first() : 最初に戻す
+ * - last() : 最後に移動する
  *
  * リスト関数 その他
  *
@@ -34,6 +28,8 @@ class IntWrapper(var value : Int) : Serializable {
  * - previousValue : 前の値
  * - nextValue(step : Int) : step 数、次の値
  * - previousValue(step : Int) : step 数、前の値
+ * - firstValue : 最初の値
+ * - lastValue : 最後の値
  *
  * シャッフル関係
  *
@@ -46,18 +42,20 @@ class IntWrapper(var value : Int) : Serializable {
  * - isLoop : ループ化設定（true かつリストのサイズが2以上の場合、リストをループとして扱う）
  *
  * */
-typealias Reterator<Type> = Triple<IntWrapper, MutableList<Type>, MutableMap<String, Any>>
+typealias Reterator<Type> = Triple<MutableValue<Int>, MutableList<Type>, MutableMap<String, Any>>
 
 /** Reterator の生成関数 */
 val <Type> Iterable<Type>.reterator : Reterator<Type>
     get(){
-        return Triple(IntWrapper(0), this.toMutableList(), mutableMapOf<String, Any>()).apply {
+        return Triple(MutableValue(0), this.toMutableList(), mutableMapOf<String, Any>()).apply {
             storeOnShuffle = true
         }
     }
 
 /** Reterator の現状のインデックス */
-val <Type> Reterator<Type>.index : Int get() = first.value
+var Reterator<*>.index : Int
+    get() = first.value
+    set(value) { first.value = value }
 
 /** Reterator の現状の値 */
 val <Type> Reterator<Type>.value : Type? get() = second[index]
@@ -72,10 +70,19 @@ val <Type> Reterator<Type>.isEmpty : Boolean get() = values.isEmpty()
 
 operator fun <Type> Reterator<Type>.contains(obj : Type) = obj in values
 
-//
+// First
 val <Type> Reterator<Type>.firstValue : Type? get() = values.getOrNull( 0 )
 fun <Type> Reterator<Type>.first() : Type? {
-    first.value = 0
+    index = 0
+    return value
+}
+
+// Last
+val <Type> Reterator<Type>.lastValue : Type? get() = values.getOrNull( size-1 )
+fun <Type> Reterator<Type>.last() : Type? {
+    if( size == 0 ) return null
+
+    index = size-1
     return value
 }
 
