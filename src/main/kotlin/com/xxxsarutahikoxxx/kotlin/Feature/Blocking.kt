@@ -34,7 +34,7 @@ interface Blockable {
      *
      * 返り値は [key] が一致して処理が実行された場合は Pair(true, func().invoke()), それ以外は Pair<false, null> である
      * */
-    fun <Key : Any, RET : Any> unblocking( key : Key, func : (Key)->(RET) ) : Pair<Boolean, RET?> {
+    fun <Key : Any, RET : Any> unblock(key : Key, func : (Key)->(RET) ) : Pair<Boolean, RET?> {
         return when( BlockableManager[this] ){
             null, key.hashCode() -> {
                 true to func(key)
@@ -48,8 +48,12 @@ interface Blockable {
     fun <Key : Any> block(key : Key){
         BlockableManager[this] = key
     }
-    /** ブロックされた状態を解除する */
-    fun unblocking(){
+    /** [key] でブロックされた状態を解除する */
+    fun <Key : Any> unblock(key : Key){
+        if( BlockableManager[this] == key ) BlockableManager.remove(this)
+    }
+    /** [key] に関わらずブロックされた状態を解除する */
+    fun unblocks(){
         BlockableManager.remove(this)
     }
 }
@@ -82,12 +86,12 @@ fun main(args: Array<String>) {
     a.blocking("key2"){ out = "value2" } // 処理は実行されない
 
     //
-    a.unblocking() // ブロックを解除する
+    a.unblocks() // ブロックを解除する
 
-    a.unblocking("key3"){ out = "value3" } // 処理が実行される。 unblocking なのでブロックはされない
+    a.unblock("key3"){ out = "value3" } // 処理が実行される。 unblocking なのでブロックはされない
     a.blocking("key4"){ out = "value4" } // 処理が実行される。 blocking なので "key4" でブロックされる
 
-    a.unblocking("key5"){ out = "value5" } // 処理は実行されない
+    a.unblock("key5"){ out = "value5" } // 処理は実行されない
 
     //
     val (TRUE, RETURN) = a.blocking("key4"){ "Return" } // 処理が行われた場合の返り値は (true, return)
