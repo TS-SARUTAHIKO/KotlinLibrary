@@ -25,7 +25,7 @@ compileTestKotlin {
 }
 
 
-def versionName = "1.1.30"
+def versionName = "1.1.31"
 def repo = new File(rootDir, "repository")
 
 apply plugin: 'maven'
