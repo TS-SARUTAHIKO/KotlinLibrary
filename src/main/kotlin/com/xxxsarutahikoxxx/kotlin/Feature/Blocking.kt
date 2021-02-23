@@ -50,7 +50,7 @@ interface Blockable {
     }
     /** [key] でブロックされた状態を解除する */
     fun <Key : Any> unblock(key : Key){
-        if( BlockableManager[this] == key ) BlockableManager.remove(this)
+        if( BlockableManager[this] == key.hashCode() ) BlockableManager.remove(this)
     }
     /** [key] に関わらずブロックされた状態を解除する */
     fun unblocks(){
@@ -96,4 +96,14 @@ fun main(args: Array<String>) {
     //
     val (TRUE, RETURN) = a.blocking("key4"){ "Return" } // 処理が行われた場合の返り値は (true, return)
     val (FALSE, NULL) = a.blocking("key5"){ "Return" }  // 処理が行われなかった場合の返り値は (false, null)
+
+
+
+    //
+    a.unblocks()
+    a.blocking(a){ out = "AAAA" }
+    a.unblock(a)
+
+    a.nonBlocking("key1"){ out = "BBBB" }
+
 }
