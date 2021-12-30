@@ -38,9 +38,4 @@ publishing {
             from components.java
         }
     }
-    repositories {
-        maven {
-            url "file://${projectDir}/local-repo"
-        }
-    }
 }
