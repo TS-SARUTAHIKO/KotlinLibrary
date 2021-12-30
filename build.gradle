@@ -40,6 +40,8 @@ publishing {
                 groupId gID
                 artifactId aID
                 version ver
+
+                from components.java
             }
         }
     }
