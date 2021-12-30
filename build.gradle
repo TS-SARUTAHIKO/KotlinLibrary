@@ -27,16 +27,27 @@ test {
 
 
 
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                groupId = 'org.xxxsarutahikoxxx.kotlin'
-                artifactId = 'KotlinLibrary'
-                version = '2.0.1'
+apply plugin: 'maven-publish'
 
-                from components.java
+def gID = "org.xxxsarutahikoxxx.kotlin"
+def aID= "KotlinLibrary"
+def ver = "2.0.1"
+
+publishing {
+    repositories{
+        publications {
+            maven(MavenPublication) {
+                groupId gID
+                artifactId aID
+                version ver
             }
         }
     }
+}
+task copyRepo(type : Copy, dependsOn: publishToMavenLocal){
+    from "C:\\Users\\tshom\\.m2\\repository\\${gID.replace(".", "\\")}\\${aID}"
+    into new File(rootDir, "repository\\${gID.replace(".", "\\")}\\${aID}")
+}
+task makeRepo(type : Delete, dependsOn: copyRepo) {
+    delete "C:\\Users\\tshom\\.m2\\repository\\${gID.replace(".", "\\")}\\${aID}"
 }

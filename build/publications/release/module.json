@@ -1,0 +1,87 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.xxxsarutahikoxxx.kotlin",
+    "module": "KotlinLibrary",
+    "version": "2.0.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "KotlinLibrary-2.0.1.jar",
+          "url": "KotlinLibrary-2.0.1.jar",
+          "size": 290306,
+          "sha512": "2d520df39860ae6ee432032b6dda0a2f1b83a5d07e78da626e49f43de61c89574996f164dc540739f55182799363631c035005e76a8cb9061d541aa4a6c726bf",
+          "sha256": "a431689f4111ec822d756b2361b722f55038ea9f28884a3a651c8b870b866fca",
+          "sha1": "c690141fa7a2d4e44009f5128ebbf09e726f9927",
+          "md5": "922bb0088b8d860959cee7bc961fb30e"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "1.6.10"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.6.0"
+          }
+        },
+        {
+          "group": "io.ultreia",
+          "module": "bluecove",
+          "version": {
+            "requires": "2.1.1"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "KotlinLibrary-2.0.1.jar",
+          "url": "KotlinLibrary-2.0.1.jar",
+          "size": 290306,
+          "sha512": "2d520df39860ae6ee432032b6dda0a2f1b83a5d07e78da626e49f43de61c89574996f164dc540739f55182799363631c035005e76a8cb9061d541aa4a6c726bf",
+          "sha256": "a431689f4111ec822d756b2361b722f55038ea9f28884a3a651c8b870b866fca",
+          "sha1": "c690141fa7a2d4e44009f5128ebbf09e726f9927",
+          "md5": "922bb0088b8d860959cee7bc961fb30e"
+        }
+      ]
+    }
+  ]
+}
