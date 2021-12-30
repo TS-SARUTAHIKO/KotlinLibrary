@@ -3,7 +3,7 @@
   "component": {
     "group": "org.xxxsarutahikoxxx.kotlin",
     "module": "KotlinLibrary",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "attributes": {
       "org.gradle.status": "release"
     }
@@ -27,8 +27,8 @@
       },
       "files": [
         {
-          "name": "KotlinLibrary-2.0.1.jar",
-          "url": "KotlinLibrary-2.0.1.jar",
+          "name": "KotlinLibrary-2.0.2.jar",
+          "url": "KotlinLibrary-2.0.2.jar",
           "size": 290306,
           "sha512": "2d520df39860ae6ee432032b6dda0a2f1b83a5d07e78da626e49f43de61c89574996f164dc540739f55182799363631c035005e76a8cb9061d541aa4a6c726bf",
           "sha256": "a431689f4111ec822d756b2361b722f55038ea9f28884a3a651c8b870b866fca",
@@ -73,8 +73,8 @@
       ],
       "files": [
         {
-          "name": "KotlinLibrary-2.0.1.jar",
-          "url": "KotlinLibrary-2.0.1.jar",
+          "name": "KotlinLibrary-2.0.2.jar",
+          "url": "KotlinLibrary-2.0.2.jar",
           "size": 290306,
           "sha512": "2d520df39860ae6ee432032b6dda0a2f1b83a5d07e78da626e49f43de61c89574996f164dc540739f55182799363631c035005e76a8cb9061d541aa4a6c726bf",
           "sha256": "a431689f4111ec822d756b2361b722f55038ea9f28884a3a651c8b870b866fca",

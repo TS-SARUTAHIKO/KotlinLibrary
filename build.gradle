@@ -26,23 +26,18 @@ test {
 }
 
 
-
-apply plugin: 'maven-publish'
-
 def gID = "org.xxxsarutahikoxxx.kotlin"
 def aID= "KotlinLibrary"
-def ver = "2.0.1"
+def ver = "2.0.2"
 
 publishing {
-    repositories{
-        publications {
-            maven(MavenPublication) {
-                groupId gID
-                artifactId aID
-                version ver
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = gID
+            artifactId = aID
+            version = ver
 
-                from components.java
-            }
+            from components.java
         }
     }
 }
