@@ -31,7 +31,7 @@ apply plugin: 'maven-publish'
 afterEvaluate {
     publishing {
         publications {
-            maven(MavenPublication) {
+            release(MavenPublication) {
                 groupId = 'org.xxxsarutahikoxxx.kotlin'
                 artifactId = 'KotlinLibrary'
                 version = '2.0.1'
