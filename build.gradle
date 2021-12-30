@@ -30,12 +30,17 @@ apply plugin: 'maven-publish'
 
 publishing {
     publications {
-        // Creates a Maven publication called "release".
-        release(MavenPublication) {
-            // You can then customize attributes of the publication as shown below.
+        maven(MavenPublication) {
             groupId = 'org.xxxsarutahikoxxx.kotlin'
             artifactId = 'KotlinLibrary'
             version = '2.0.1'
+
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://${projectDir}/local-repo"
         }
     }
 }
