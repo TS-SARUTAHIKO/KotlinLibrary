@@ -29,11 +29,11 @@
         {
           "name": "KotlinLibrary-2.0.1.jar",
           "url": "KotlinLibrary-2.0.1.jar",
-          "size": 289533,
-          "sha512": "d9ccfe7a72f8dbf9195cac0462f807e87d0d1921644b5ce2abf39407f7b7eb47c77650ee7373f9315be49f5490308f45136ed7d0da6a42a55c802e380061800d",
-          "sha256": "867a4e49ef0e47e97f451811972c75467cd51e2beaa59a07af678d47fc5662fe",
-          "sha1": "697559c6ec6b33918aebcb4216145b83c4b257c9",
-          "md5": "556b6545eb71809faa91d6ffbef0f608"
+          "size": 290306,
+          "sha512": "2d520df39860ae6ee432032b6dda0a2f1b83a5d07e78da626e49f43de61c89574996f164dc540739f55182799363631c035005e76a8cb9061d541aa4a6c726bf",
+          "sha256": "a431689f4111ec822d756b2361b722f55038ea9f28884a3a651c8b870b866fca",
+          "sha1": "c690141fa7a2d4e44009f5128ebbf09e726f9927",
+          "md5": "922bb0088b8d860959cee7bc961fb30e"
         }
       ]
     },
@@ -75,11 +75,11 @@
         {
           "name": "KotlinLibrary-2.0.1.jar",
           "url": "KotlinLibrary-2.0.1.jar",
-          "size": 289533,
-          "sha512": "d9ccfe7a72f8dbf9195cac0462f807e87d0d1921644b5ce2abf39407f7b7eb47c77650ee7373f9315be49f5490308f45136ed7d0da6a42a55c802e380061800d",
-          "sha256": "867a4e49ef0e47e97f451811972c75467cd51e2beaa59a07af678d47fc5662fe",
-          "sha1": "697559c6ec6b33918aebcb4216145b83c4b257c9",
-          "md5": "556b6545eb71809faa91d6ffbef0f608"
+          "size": 290306,
+          "sha512": "2d520df39860ae6ee432032b6dda0a2f1b83a5d07e78da626e49f43de61c89574996f164dc540739f55182799363631c035005e76a8cb9061d541aa4a6c726bf",
+          "sha256": "a431689f4111ec822d756b2361b722f55038ea9f28884a3a651c8b870b866fca",
+          "sha1": "c690141fa7a2d4e44009f5128ebbf09e726f9927",
+          "md5": "922bb0088b8d860959cee7bc961fb30e"
         }
       ]
     }
