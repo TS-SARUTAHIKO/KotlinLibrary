@@ -1,7 +1,6 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.6.10'
     id 'java-library'
-    id 'maven-publish'
 }
 
 group 'org.xxxsarutahikoxxx.kotlin'
@@ -26,9 +25,11 @@ test {
 }
 
 
+apply plugin: 'maven-publish'
+
 def gID = "org.xxxsarutahikoxxx.kotlin"
 def aID= "KotlinLibrary"
-def ver = "2.0.2"
+def ver = "2.0.3"
 
 publishing {
     publications {
