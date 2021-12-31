@@ -1,11 +1,13 @@
 package org.xxxsarutahikoxxx.kotlin.RSInvocation
 
-import org.xxxsarutahikoxxx.kotlin.SocketRunner.ClientWebRunner
+import org.xxxsarutahikoxxx.kotlin.Feature.IDUniqueSerializable
+import org.xxxsarutahikoxxx.kotlin.Feature.IDUniques
+import org.xxxsarutahikoxxx.kotlin.IORunner.ClientTCPRunner
 import java.io.Serializable
 
 fun main(args: Array<String>) {
 
-    object : ClientWebRunner(), RSIExporter, RSIAccepter {
+    object : ClientTCPRunner("localhost", 53456), RSIExporter, RSIAccepter {
         init {
             gp.exporter = this
             gp.accepter = this

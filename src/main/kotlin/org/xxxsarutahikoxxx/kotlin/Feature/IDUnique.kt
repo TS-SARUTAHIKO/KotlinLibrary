@@ -2,7 +2,6 @@ package org.xxxsarutahikoxxx.kotlin.Feature
 
 import org.xxxsarutahikoxxx.kotlin.Utilitys.ObjectToObject
 import org.xxxsarutahikoxxx.kotlin.Utilitys.out
-import org.xxxsarutahikoxxx.kotlin.Utilitys.out
 import java.io.*
 
 
@@ -71,6 +70,9 @@ class IDUniqueSerializablePointer(private val clazz : Class<out IDUniqueSerializ
 
 
 
+
+
+
 // コンストラクタの使用は禁止する
 private class Test private constructor(override val uniqueID: String) : IDUnique {
     companion object {
@@ -87,20 +89,18 @@ private class SerializableTest private constructor(override val uniqueID: String
     }
 }
 
-
-
-
 fun main() {
     // 同じuniqueIDを持つなら同じインスタンスである
     val A = Test.newInstance("A")
-    out = (A == Test.newInstance("A"))
+    out = (A == Test.newInstance("A")) // out = true
 
     A.delete()
 
     // 上記に加えてシリアライズに対応している
+    // ※ ObjectToObject：シリアライズでバイト列に変換してから元に戻す関数
     val B = SerializableTest.newInstance("B")
-    out = (B == SerializableTest.newInstance("B"))
-    out = (B == B.ObjectToObject) // ※ ObjectToObject：シリアライズでバイト列に変換してから元に戻す
+    out = (B == SerializableTest.newInstance("B")) // out = true
+    out = (B == B.ObjectToObject) // out = true
 
     B.delete()
 }

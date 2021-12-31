@@ -9,7 +9,7 @@ fun main(args: Array<String>) {
     RMIHostRegistry().let {
         it["test"] = rr
 
-        it.openWebPort()
+        it.openWebPort(53456)
     }
 }
 

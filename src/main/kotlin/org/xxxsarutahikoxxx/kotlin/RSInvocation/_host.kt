@@ -1,12 +1,12 @@
 package org.xxxsarutahikoxxx.kotlin.RSInvocation
 
-import org.xxxsarutahikoxxx.kotlin.SocketRunner.HostWebRunner
+import org.xxxsarutahikoxxx.kotlin.IORunner.HostTCPRunner
 import org.xxxsarutahikoxxx.kotlin.Utilitys.out
 import java.io.Serializable
 
 fun main(args: Array<String>) {
 
-    object : HostWebRunner(), RSIExporter, RSIAccepter {
+    object : HostTCPRunner(53456), RSIExporter, RSIAccepter {
         init {
             gp.exporter = this
             gp.accepter = this

@@ -1,15 +1,15 @@
 package org.xxxsarutahikoxxx.kotlin.RMInvocation
 
-import org.xxxsarutahikoxxx.kotlin.SocketRunner.*
+import org.xxxsarutahikoxxx.kotlin.IORunner.*
 import java.io.Serializable
 import javax.bluetooth.RemoteDevice
 
 
 open class RMIHostWebRunner(
-    port : Int = WEB_RUNNER_TEST_PORT,
+    port : Int,
     isAutoReconnect : Boolean = true,
     isAutoReader: Boolean = true
-) : HostWebRunner(port, isAutoReconnect, isAutoReader), RMIHostReactor {
+) : HostTCPRunner(port, isAutoReconnect, isAutoReader), RMIHostReactor {
     override var registry: RMIHostRegistry? = null
 
     override fun exportRetMessage(message: RetMessage) {
@@ -23,10 +23,10 @@ open class RMIHostWebRunner(
 }
 open class RMIClientWebRunner(
     address : String = "localhost",
-    port : Int = WEB_RUNNER_TEST_PORT,
+    port : Int,
     isAutoReconnect : Boolean = true,
     isAutoReader: Boolean = true
-) : ClientWebRunner(address, port, isAutoReconnect, isAutoReader), RMIClientReactor {
+) : ClientTCPRunner(address, port, isAutoReconnect, isAutoReader), RMIClientReactor {
     override var onAccept: ((RetMessage) -> Unit)? = null
 
     override fun exportRMI(rmi: RMInvocation) {
@@ -74,13 +74,13 @@ open class RMIClientBluetoothRunner(
 }
 
 
-fun RMIHostRegistry.openWebPort(port : Int = WebRunner.WEB_RUNNER_TEST_PORT, isAutoReconnect : Boolean = true){
+fun RMIHostRegistry.openWebPort(port : Int, isAutoReconnect : Boolean = true){
     RMIHostWebRunner(port, isAutoReconnect).let {
         addReactor(it)
         it.open()
     }
 }
-fun RMIClientRegistry.connectWebPort(address : String = "localhost", port : Int = WebRunner.WEB_RUNNER_TEST_PORT, isAutoReconnect : Boolean = true){
+fun RMIClientRegistry.connectWebPort(address : String = "localhost", port : Int, isAutoReconnect : Boolean = true){
     RMIClientWebRunner(address, port, isAutoReconnect).let {
         setReactor(it)
         it.connect()
