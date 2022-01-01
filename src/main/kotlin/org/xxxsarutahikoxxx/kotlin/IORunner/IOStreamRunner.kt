@@ -4,6 +4,7 @@ import org.xxxsarutahikoxxx.kotlin.Utilitys.out
 import java.io.InputStream
 import java.io.OutputStream
 import java.lang.Exception
+import java.nio.Buffer
 import java.nio.ByteBuffer
 
 abstract class IOStreamRunner(
@@ -40,6 +41,15 @@ abstract class IOStreamRunner(
         }
 
         throw NoStreamException("No InputStream")
+    }
+    private fun InputStream.readNBytes(size : Int) : ByteArray {
+        val bytes = ByteArray(size)
+        var done = 0
+
+        while( done < size ){
+            done += read(bytes, done, size-done)
+        }
+        return bytes
     }
 
     /** ホストとしてポートが開かれた場合の処理関数 */
