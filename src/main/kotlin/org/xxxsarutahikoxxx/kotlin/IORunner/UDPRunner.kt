@@ -31,7 +31,7 @@ abstract class UDPRunner(
         onOpened()
     }
     override fun connectPort() {
-        socket = DatagramSocket(port).apply { broadcast = isBroadcast ; socketInit() }
+        socket = DatagramSocket().apply { broadcast = isBroadcast ; socketInit() }
 
         onConnected()
     }
