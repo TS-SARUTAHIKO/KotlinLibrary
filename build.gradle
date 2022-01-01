@@ -29,7 +29,7 @@ apply plugin: 'maven-publish'
 
 def gID = "org.xxxsarutahikoxxx.kotlin"
 def aID= "KotlinLibrary"
-def ver = "2.0.8"
+def ver = "2.0.9"
 
 publishing {
     publications {
