@@ -25,12 +25,12 @@ abstract class UDPRunner(
     private var socket : DatagramSocket? = null
     var socketInit : DatagramSocket.()->(Unit) = {}
 
-    override fun open() {
+    override fun openPort() {
         socket = DatagramSocket(port).apply { /*broadcast = isBroadcast ;*/ socketInit() }
 
         onOpened()
     }
-    override fun connect() {
+    override fun connectPort() {
         socket = DatagramSocket(port).apply { broadcast = isBroadcast ; socketInit() }
 
         onConnected()
@@ -73,7 +73,7 @@ open class HostUDPRunner(
     isAutoReader: Boolean = true
 ) : UDPRunner(null, port, bufferSize, false, true, isAutoReconnect, isAutoReader) {
     @Deprecated("HostRunner can open, can't connect")
-    override fun connect() = throw RuntimeException("HostWebRunner can open, can't connect")
+    override fun connectPort() = throw RuntimeException("HostWebRunner can open, can't connect")
 }
 
 open class ClientUDPRunner(
@@ -85,5 +85,5 @@ open class ClientUDPRunner(
     isAutoReader: Boolean = true
 ) : UDPRunner(address ?: if(isBroadcast) "255.255.255.255" else null, port, bufferSize, isBroadcast, false, isAutoReconnect, isAutoReader) {
     @Deprecated("ClientRunner can connect, can't open")
-    override fun open() = throw RuntimeException("ClientWebRunner can connect, can't open")
+    override fun openPort() = throw RuntimeException("ClientWebRunner can connect, can't open")
 }

@@ -18,7 +18,7 @@ abstract class BluetoothRunner(
 
     var connection : StreamConnection? = null
 
-    override fun open() {
+    override fun openPort() {
         out = "Accept Connection..."
 
         val server : StreamConnectionNotifier = Connector.open(
@@ -36,7 +36,7 @@ abstract class BluetoothRunner(
         out = "Opened : $connection"
         onOpened(connection!!.openInputStream(), connection!!.openOutputStream())
     }
-    override fun connect() {
+    override fun connectPort() {
         out = "Connecting..."
 
         val localDevice = LocalDevice.getLocalDevice()
@@ -124,7 +124,7 @@ open class HostBluetoothRunner(
     isAutoReader: Boolean = true
 ) : BluetoothRunner(null, uuid, true, isAutoReconnect, isAutoReader) {
     @Deprecated("HostRunner can open, can't connect")
-    override fun connect() = throw RuntimeException("HostWebRunner can open, can't connect")
+    override fun connectPort() = throw RuntimeException("HostWebRunner can open, can't connect")
 
     companion object {
         /** 初回起動時に非常に時間がかかる。デバイスが追加された場合は[BluetoothRunner.Companion.devices]を更新しないと反映されない。 */
@@ -139,7 +139,7 @@ open class ClientBluetoothRunner(
     isAutoReader: Boolean = true
 ) : BluetoothRunner(device, uuid, false, isAutoReconnect, isAutoReader) {
     @Deprecated("ClientRunner can connect, can't open")
-    override fun open() = throw RuntimeException("ClientWebRunner can connect, can't open")
+    override fun openPort() = throw RuntimeException("ClientWebRunner can connect, can't open")
 
     companion object {
         /** 初回起動時に非常に時間がかかる。デバイスが追加された場合は[BluetoothRunner.Companion.devices]を更新しないと反映されない。 */

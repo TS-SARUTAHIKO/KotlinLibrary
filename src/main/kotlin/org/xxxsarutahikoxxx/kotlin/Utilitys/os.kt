@@ -1,5 +1,7 @@
 package org.xxxsarutahikoxxx.kotlin.Utilitys
 
+import java.net.InetAddress
+
 
 val isWindows : Boolean by lazy { System.getProperty("os.name").contains("windows", true) }
 val isAndroid : Boolean by lazy { System.getProperty("os.name").contains("android", true) }
@@ -41,3 +43,7 @@ fun <T : Any, Ret> T.ifAndroid( func : T.()->(Ret) ) : Ret? {
     return if( isAndroid ) func() else null
 }
 
+
+
+val HostName : String by lazy { InetAddress.getLocalHost().hostName }
+val HostAddress : String by lazy { InetAddress.getLocalHost().hostAddress }

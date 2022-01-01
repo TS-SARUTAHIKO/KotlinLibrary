@@ -164,7 +164,10 @@ abstract class IORunner(
         out = "Accept Serializable : $obj"
     }
 
-    abstract fun open()
+    final fun open(){
+        if( ! hasConnection ) openPort()
+    }
+    protected abstract fun openPort()
 
     /** ホストとしてポートが開かれた場合の処理関数 */
     protected open fun onOpened(){
@@ -172,7 +175,10 @@ abstract class IORunner(
         if( isAutoReader ) runOnThread = true
     }
 
-    abstract fun connect()
+    final fun connect(){
+        if( ! hasConnection ) connectPort()
+    }
+    protected abstract fun connectPort()
     /** クライアントとしてポートに接続した場合の処理関数 */
     protected open fun onConnected(){
         hasConnection = true
@@ -198,9 +204,9 @@ abstract class IORunner(
         if( ! isAutoReconnect )return
 
         if( HostMode ){
-            open()
+            openPort()
         }else{
-            connect()
+            connectPort()
         }
     }
 

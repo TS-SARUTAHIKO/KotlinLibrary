@@ -20,7 +20,7 @@ abstract class TCPRunner(
     private var socket : Socket? = null
     var socketInit : Socket.()->(Unit) = {}
 
-    override fun open() {
+    override fun openPort() {
         out = "Accept Connection..."
 
         socket = ServerSocket().run {
@@ -37,7 +37,7 @@ abstract class TCPRunner(
         out = "Opened : $socket"
         onOpened(socket!!.getInputStream(), socket!!.getOutputStream())
     }
-    override fun connect() {
+    override fun connectPort() {
         out = "Connecting..."
 
         socket = Socket(address, port).apply {
@@ -61,7 +61,7 @@ open class HostTCPRunner(
     isAutoReader: Boolean = true
 ) : TCPRunner("localhost", port, true, isAutoReconnect, isAutoReader) {
     @Deprecated("HostRunner can open, can't connect")
-    override fun connect() = throw RuntimeException("HostWebRunner can open, can't connect")
+    override fun connectPort() = throw RuntimeException("HostWebRunner can open, can't connect")
 }
 
 open class ClientTCPRunner(
@@ -71,5 +71,5 @@ open class ClientTCPRunner(
     isAutoReader: Boolean = true
 ) : TCPRunner(address, port, false, isAutoReconnect, isAutoReader) {
     @Deprecated("ClientRunner can connect, can't open")
-    override fun open() = throw RuntimeException("ClientWebRunner can connect, can't open")
+    override fun openPort() = throw RuntimeException("ClientWebRunner can connect, can't open")
 }

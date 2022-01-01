@@ -1,7 +1,5 @@
 package org.xxxsarutahikoxxx.kotlin.RSInvocation
 
-import org.xxxsarutahikoxxx.kotlin.Feature.IDUniqueSerializable
-import org.xxxsarutahikoxxx.kotlin.Feature.IDUniques
 import org.xxxsarutahikoxxx.kotlin.IORunner.ClientTCPRunner
 import java.io.Serializable
 
