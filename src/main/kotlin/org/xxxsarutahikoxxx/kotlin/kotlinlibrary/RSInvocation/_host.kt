@@ -6,10 +6,10 @@ import java.io.Serializable
 
 fun main(args: Array<String>) {
 
-    object : HostTCPRunner(53456), RSIExporter, RSIAccepter {
+    object : HostTCPRunner(53456), RSIExporter, RSIAcceptor {
         init {
             gp.exporter = this
-            gp.accepter = this
+            gp.acceptor = this
         }
 
         override fun exportRSI(rsi: RSInvocation<*>) = writeObject(rsi)

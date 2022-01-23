@@ -11,8 +11,6 @@ import java.io.Serializable
  * 引数は [Serializable] である必要がある
  *
  * ※ レシーバー・ディスパッチレシーバーは [Serializable] のチェックを行わないために実行時エラーがでる可能性がある
- *
- * 実際に用いるのは引数の数に応じて [RSInvocationImpl] ～ [RMInvocation4] が存在する実装版を用いる
  * */
 interface RSInvocation<Ret> : Serializable {
     operator fun invoke() : Ret
@@ -21,16 +19,13 @@ interface RSInvocation<Ret> : Serializable {
 /**
  * [RSInvocation] の実装クラス
  * */
-internal class RSInvocationImpl<Ret>(
-    val func : ()->(Ret)
-) : RSInvocation<Ret> {
+internal class RSInvocationImpl<Ret>(val func : ()->(Ret)) : RSInvocation<Ret> {
     override operator fun invoke() : Ret = func()
 
     companion object {
         @JvmStatic private val serialVersionUID: Long = 1L
     }
 }
-
 
 /**
  * [KFunction] から [RSInvocation] への変換関数
